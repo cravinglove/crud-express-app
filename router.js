@@ -52,18 +52,48 @@ router.post('/students/new',function(req, res){
   //  将数据保存在data.json文件中持久化
   // 先读取转对象，向对象中push数据，再将对象转为字符串，将字符串写入原文件
   // 3.发送响应
+  Student.save(req.body,function(err){
+    if (err){
+      return res.status(500).send('Server error.')
+    }
+    res.redirect('/students')
+  })
+
 })
 
 router.get('/students/edit',function(req,res){
-
+  // 1.列表页处理链接需要有id参数
+  // 2. 获取要编辑的学生id
+  // 3. 渲染编辑页面
+  Student.findById(parseInt(req.query.id),function(err, student){
+    if (err) {
+      return res.status(500).send('Server Error.')
+    }
+    res.render('edit.html',{
+      student: student
+    })
+  })
 })
 
 router.post('/students/edit',function(req,res){
-
+  // 1.获取表单数据
+  // 2.更新Student.UPDATE
+  // 3.发送响应重定向
+  Student.updateById(req.body,function(err){
+    if(err){
+      return res.status(500).send('Server error.')
+    }
+    res.redirect('/students')
+  })
 })
 
 router.get('/students/delete',function(req,res){
-
+  Student.deleteById(req.query.id, function(err){
+    if(err){
+      return res.status(500).send('Server Error.')
+    }
+    res.redirect('/students')
+  })
 })
 
 
